@@ -1,0 +1,11 @@
+<script>
+function checkUserPermission() {
+  const user = Session.getActiveUser().getEmail();
+  
+  if (!user) {
+    throw new Error('Bạn cần đăng nhập để sử dụng ứng dụng');
+  }
+  
+  return user;
+}
+</script>

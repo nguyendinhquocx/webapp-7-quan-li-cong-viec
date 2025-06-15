@@ -1,0 +1,29 @@
+<script>
+class ErrorHandler {
+  static handle(error, context = '') {
+    Logger.log(`Error in ${context}:`, error);
+    
+    const userMessage = this.getUserFriendlyMessage(error);
+    showNotification(userMessage, 'error');
+    
+    // Gửi error report nếu cần
+    this.reportError(error, context);
+  }
+  
+  static getUserFriendlyMessage(error) {
+    const errorMap = {
+      'Authorization': 'Bạn không có quyền thực hiện thao tác này',
+      'Network': 'Lỗi kết nối mạng, vui lòng thử lại',
+      'Validation': 'Dữ liệu nhập vào không hợp lệ'
+    };
+    
+    for (const [key, message] of Object.entries(errorMap)) {
+      if (error.message.includes(key)) {
+        return message;
+      }
+    }
+    
+    return 'Có lỗi xảy ra, vui lòng thử lại sau';
+  }
+}
+</script>

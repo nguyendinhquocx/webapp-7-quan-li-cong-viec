@@ -5,7 +5,7 @@ function doGet() {
     .setTitle('Phần Mềm Quản Lý Công Việc')
     .addMetaTag('viewport', 'width=device-width, initial-scale=1')
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL)
-    .setFaviconUrl("https://cdn-icons-png.flaticon.com/512/2098/2098402.png");
+    .setFaviconUrl("https://cdn-icons-png.flaticon.com/128/7046/7046053.png");
 }
 
 // Hàm include để nhúng các file ngoài
@@ -60,18 +60,10 @@ function setupSheets() {
       users.appendRow([
         "ID", "Tên", "Chữ viết tắt"
       ]);
-      // Thêm người dùng mẫu
-      users.appendRow(["na", "Nguyễn Văn A", "NA"]);
-      users.appendRow(["tb", "Trần Thị B", "TB"]);
-      users.appendRow(["lc", "Lê Văn C", "LC"]);
-      users.appendRow(["pd", "Phạm Thị D", "PD"]);
-      users.appendRow(["ve", "Vũ Văn E", "VE"]);
+      // Đã loại bỏ việc thêm người dùng mẫu
     }
     
-    // Thêm dữ liệu mẫu nếu sheet Tasks còn trống
-    if (tasks.getLastRow() === 1) {
-      initializeSampleData();
-    }
+    // Đã loại bỏ việc kiểm tra và thêm dữ liệu mẫu
     
     return {
       tasks: tasks,
@@ -85,7 +77,7 @@ function setupSheets() {
   }
 }
 
-// Tạo dữ liệu mẫu
+// Giữ lại function initializeSampleData nhưng không gọi nó tự động
 function initializeSampleData() {
   try {
     const ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -94,57 +86,31 @@ function initializeSampleData() {
     const assignees = ss.getSheetByName("Assignees");
     const attachments = ss.getSheetByName("Attachments");
     
-    // Thêm dữ liệu mẫu vào sheet Tasks
-    const taskData = [
-      ["task-1", "Thiết kế giao diện người dùng", "Tạo wireframe và thiết kế UI cho ứng dụng di động", "inprogress", "high", "15/04/2025", "20/04/2025", "33"],
-      ["task-2", "Nghiên cứu thị trường", "Thu thập dữ liệu về đối thủ cạnh tranh và phân tích xu hướng", "cancelled", "medium", "20/04/2025", "25/04/2025", "0"],
-      ["task-3", "Phát triển API", "Xây dựng RESTful API cho ứng dụng web", "inprogress", "high", "12/04/2025", "18/04/2025", "50"],
-      ["task-4", "Kiểm thử tính năng đăng nhập", "Thực hiện kiểm thử tự động cho tính năng đăng nhập", "overdue", "medium", "14/04/2025", "16/04/2025", "50"],
-      ["task-5", "Tài liệu kỹ thuật", "Viết tài liệu kỹ thuật cho API và hướng dẫn tích hợp", "done", "low", "05/04/2025", "10/04/2025", "100"]
-    ];
+    // Các mảng dữ liệu mẫu hiện tại đều trống
+    const taskData = [];
     
-    taskData.forEach(row => tasks.appendRow(row));
-    Logger.log("Đã thêm " + taskData.length + " công việc mẫu");
+    if (taskData.length > 0) {
+      taskData.forEach(row => tasks.appendRow(row));
+      Logger.log("Đã thêm " + taskData.length + " công việc mẫu");
+    }
     
-    // Thêm công việc con
-    const subtaskData = [
-      ["subtask-1-1", "task-1", "Tạo wireframe màn hình đăng nhập", "false"],
-      ["subtask-1-2", "task-1", "Thiết kế giao diện trang chủ", "false"],
-      ["subtask-1-3", "task-1", "Hoàn thiện các biểu tượng", "true"],
-      ["subtask-2-1", "task-2", "Phân tích đối thủ", "false"],
-      ["subtask-2-2", "task-2", "Khảo sát người dùng", "false"],
-      ["subtask-3-1", "task-3", "Thiết kế cấu trúc API", "true"],
-      ["subtask-3-2", "task-3", "Viết endpoints xác thực", "false"],
-      ["subtask-4-1", "task-4", "Tạo kịch bản kiểm thử", "true"],
-      ["subtask-4-2", "task-4", "Chạy kiểm thử tự động", "false"],
-      ["subtask-5-1", "task-5", "Viết hướng dẫn cài đặt", "true"],
-      ["subtask-5-2", "task-5", "Tạo tài liệu API", "true"]
-    ];
+    // Các mảng dữ liệu con đều trống
+    const subtaskData = [];
+    if (subtaskData.length > 0) {
+      subtaskData.forEach(row => subtasks.appendRow(row));
+    }
     
-    subtaskData.forEach(row => subtasks.appendRow(row));
+    // Người phụ trách mẫu
+    const assigneeData = [];
+    if (assigneeData.length > 0) {
+      assigneeData.forEach(row => assignees.appendRow(row));
+    }
     
-    // Thêm người phụ trách
-    const assigneeData = [
-      ["task-1", "na", "Nguyễn Văn A", "NA"],
-      ["task-1", "tb", "Trần Thị B", "TB"],
-      ["task-2", "tb", "Trần Thị B", "TB"],
-      ["task-3", "lc", "Lê Văn C", "LC"],
-      ["task-4", "pd", "Phạm Thị D", "PD"],
-      ["task-5", "ve", "Vũ Văn E", "VE"]
-    ];
-    
-    assigneeData.forEach(row => assignees.appendRow(row));
-    
-    // Thêm tệp đính kèm
-    const attachmentData = [
-      ["task-1", "wireframe.jpg", "image", "https://via.placeholder.com/100x60"],
-      ["task-1", "guidelines.pdf", "file", "#"],
-      ["task-3", "api-docs.json", "file", "#"],
-      ["task-4", "test-cases.xlsx", "file", "#"],
-      ["task-5", "documentation.docx", "file", "#"]
-    ];
-    
-    attachmentData.forEach(row => attachments.appendRow(row));
+    // Tệp đính kèm mẫu
+    const attachmentData = [];
+    if (attachmentData.length > 0) {
+      attachmentData.forEach(row => attachments.appendRow(row));
+    }
     
     Logger.log("Đã khởi tạo dữ liệu mẫu thành công");
     return true;
